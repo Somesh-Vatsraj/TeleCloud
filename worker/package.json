@@ -1,0 +1,14 @@
+{
+  "name": "telecloud-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev src/index.js --port 8787",
+    "deploy": "wrangler deploy --config ../wrangler.toml",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
