@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/index.js';
-import { useToast } from '../hooks/useToast.js';
+import { useToast } from '../hooks/useToast.jsx';
 import Loader from '../components/common/Loader.jsx';
 import { formatBytes, formatDateTime } from '../utils/format.js';
 
