@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
-import { useToast } from '../hooks/useToast.js';
+import { useToast } from '../hooks/useToast.jsx';
 import FileUpload from '../components/files/FileUpload.jsx';
 import FileList from '../components/files/FileList.jsx';
 import FilePreview from '../components/files/FilePreview.jsx';
