@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/index.js';
 import { useAuth } from '../hooks/useAuth.js';
-import { useToast } from '../hooks/useToast.js';
+import { useToast } from '../hooks/useToast.jsx';
 import StatCard from '../components/dashboard/StatCard.jsx';
 import StorageChart from '../components/dashboard/StorageChart.jsx';
 import QuickActions from '../components/dashboard/QuickActions.jsx';
