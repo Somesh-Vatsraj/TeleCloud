@@ -11,6 +11,8 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 
+<img width="1283" height="871" alt="image" src="https://github.com/user-attachments/assets/e50ce309-a8b6-49a5-89b4-add4391211ae" />
+
 ---
 
 ## 📖 Table of Contents
