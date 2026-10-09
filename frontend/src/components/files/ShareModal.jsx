@@ -3,7 +3,7 @@ import Modal from '../common/Modal.jsx';
 import Input from '../common/Input.jsx';
 import Button from '../common/Button.jsx';
 import { api } from '../../api/index.js';
-import { useToast } from '../../hooks/useToast.js';
+import { useToast } from '../../hooks/useToast.jsx';
 import { EXPIRY_OPTIONS } from '../../utils/constants.js';
 
 export default function ShareModal({ file, open, onClose }) {
