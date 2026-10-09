@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { api } from '../../api/index.js';
-import { useToast } from '../../hooks/useToast.js';
+import { useToast } from '../../hooks/useToast.jsx';
 import { MAX_FILE_SIZE } from '../../utils/constants.js';
 import { formatBytes } from '../../utils/format.js';
 
@@ -27,7 +27,6 @@ export default function FileUpload({ folderId, onUploaded }) {
     setUploading(true);
     setProgress(0);
     try {
-      // simple progress hint
       const tick = setInterval(() => setProgress((p) => Math.min(p + 8, 90)), 120);
       const data = await api.uploadFile(file, folderId);
       clearInterval(tick);
