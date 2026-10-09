@@ -14,15 +14,22 @@ const nav = [
 
 export default function Sidebar() {
   const { user } = useAuth();
+  const isAdmin = Boolean(user?.is_admin);
+
   return (
     <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-[260px] flex-col border-r border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-950/60 backdrop-blur-xl z-30">
-      <Link to="/dashboard" className="flex items-center gap-3 px-6 py-5 border-b border-slate-200/70 dark:border-slate-800/70">
+      <Link
+        to="/dashboard"
+        className="flex items-center gap-3 px-6 py-5 border-b border-slate-200/70 dark:border-slate-800/70"
+      >
         <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center text-white text-lg">
           ☁️
         </div>
         <div>
           <div className="font-bold text-slate-900 dark:text-white">{APP_NAME}</div>
-          <div className="text-[10px] uppercase tracking-wider text-slate-400">Cloud on Telegram</div>
+          <div className="text-[10px] uppercase tracking-wider text-slate-400">
+            Cloud on Telegram
+          </div>
         </div>
       </Link>
 
@@ -44,7 +51,7 @@ export default function Sidebar() {
           </NavLink>
         ))}
 
-        {user?.is_admin && (
+        {isAdmin && (
           <NavLink
             to="/admin"
             className={({ isActive }) =>
