@@ -12,15 +12,19 @@ import Chat from './pages/Chat.jsx';
 import Activity from './pages/Activity.jsx';
 import Profile from './pages/Profile.jsx';
 import Admin from './pages/Admin.jsx';
+import PublicShare from './pages/PublicShare.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 export default function App() {
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/s/:token" element={<PublicShare />} />
 
+      {/* Protected routes */}
       <Route
         element={
           <ProtectedRoute>
@@ -38,6 +42,7 @@ export default function App() {
         <Route path="/admin" element={<Admin />} />
       </Route>
 
+      {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
