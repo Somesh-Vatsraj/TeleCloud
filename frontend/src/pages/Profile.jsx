@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { api } from '../api/index.js';
 import { useAuth } from '../hooks/useAuth.js';
-import { useToast } from '../hooks/useToast.js';
-import { useTheme } from '../context/ThemeContext.js';
+import { useToast } from '../hooks/useToast.jsx';
+import { useTheme } from '../context/ThemeContext.jsx';
 import Input from '../components/common/Input.jsx';
 import Button from '../components/common/Button.jsx';
 
