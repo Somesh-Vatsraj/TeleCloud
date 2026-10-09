@@ -1,4 +1,4 @@
-import { useToast } from '../../hooks/useToast.js';
+import { useToast } from '../../hooks/useToast.jsx';
 
 const styles = {
   success: 'bg-emerald-500/95 text-white',
