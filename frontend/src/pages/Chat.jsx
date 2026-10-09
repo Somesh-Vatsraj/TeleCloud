@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/index.js';
-import { useToast } from '../hooks/useToast.js';
+import { useToast } from '../hooks/useToast.jsx';
 import ChatBox from '../components/chat/ChatBox.jsx';
 import ChatInput from '../components/chat/ChatInput.jsx';
 
