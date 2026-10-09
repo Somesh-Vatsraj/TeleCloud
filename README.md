@@ -3,6 +3,7 @@
 
 > AI-powered cloud storage that stores your files on Telegram via a Bot — **free forever, no storage fees**.
 
+<img width="1283" height="871" alt="image" src="https://github.com/user-attachments/assets/ada4c0c9-5756-4f9e-9744-1f88cab90502" />
 
 
 ---
