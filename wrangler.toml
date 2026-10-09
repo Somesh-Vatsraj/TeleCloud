@@ -1,10 +1,10 @@
 name = "telecloud"
-main = "src/index.js"
+main = "worker/src/index.js"           ← यह "worker/src/index.js" होना चाहिए
 compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 
 [assets]
-directory = "../frontend/dist"
+directory = "./frontend/dist"          ← यह "./frontend/dist" होना चाहिए
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 
