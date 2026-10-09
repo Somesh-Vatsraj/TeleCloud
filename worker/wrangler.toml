@@ -11,10 +11,10 @@ not_found_handling = "single-page-application"
 [[d1_databases]]
 binding = "DB"
 database_name = "telecloud"
-database_id = "5b1bc0c5-4e92-4434-b012-b093b82834cb"
+database_id = "5b1bc0c5-4e92-4434-b012-b093b82834cb"   # ← REAL ID, not placeholder
 
 [vars]
-JWT_SECRET = "a3f9c2e1b8d47f6a9c0e5b2d8f1a4c7e"
+JWT_SECRET = "a3f9c2e1b8d47f6a9c0e5b2d8f1a4c7e"   # ← आपका generated secret
 AI_ENDPOINT = "https://text.pollinations.ai/openai"
 
 [observability]
