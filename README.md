@@ -35,3 +35,57 @@ npm run deploy
 
 # 7. Promote first user to admin
 npm run admin:make
+Bot Setup
+Create a bot via @BotFather and copy the token.
+
+Register + login on TeleCloud.
+
+Go to Admin → paste token → save.
+
+Send /start to your bot on Telegram.
+
+Go to Profile → click Detect Chat ID.
+
+Features
+🔐 Secure JWT auth
+
+📤 Drag & drop uploads (max 50MB)
+
+🤖 AI assistant (Pollinations)
+
+🔗 Share links with password + expiry
+
+📁 Colored folders
+
+⭐ Star files
+
+🌗 Dark / light theme
+
+📱 PWA-ready
+
+📊 Admin panel
+
+License
+MIT
+
+text
+
+---
+
+## 4. `worker/package.json`
+
+```json
+{
+  "name": "telecloud-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
