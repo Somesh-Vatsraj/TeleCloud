@@ -1,0 +1,21 @@
+name = "telecloud"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "../frontend/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "telecloud"
+database_id = "REPLACE_WITH_YOUR_D1_ID"
+
+[vars]
+JWT_SECRET = "change-this-to-a-random-32-char-string-please-do-it"
+AI_ENDPOINT = "https://text.pollinations.ai/openai"
+
+[observability]
+enabled = true
