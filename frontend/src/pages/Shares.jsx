@@ -1,107 +1,167 @@
 import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { api } from '../api/index.js';
-import { useToast } from '../hooks/useToast.jsx';
-import Loader from '../components/common/Loader.jsx';
 import { formatBytes, formatDateTime } from '../utils/format.js';
+import Button from '../components/common/Button.jsx';
+import Input from '../components/common/Input.jsx';
+import Loader from '../components/common/Loader.jsx';
 
-export default function Shares() {
-  const [shares, setShares] = useState([]);
+export default function PublicShare() {
+  const { token } = useParams();
+  const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
-  const toast = useToast();
-
-  const load = async () => {
-    setLoading(true);
-    try {
-      const data = await api.listShares();
-      setShares(data.shares || []);
-    } catch (e) {
-      toast.error(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [error, setError] = useState(null);
+  const [password, setPassword] = useState('');
+  const [downloading, setDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+  const [needsPassword, setNeedsPassword] = useState(false);
 
   useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    let cancel = false;
+    api
+      .publicShare(token)
+      .then((data) => {
+        if (cancel) return;
+        setMeta(data);
+        setNeedsPassword(Boolean(data.requires_password));
+      })
+      .catch((e) => {
+        if (!cancel) setError(e.message || 'Share not found');
+      })
+      .finally(() => {
+        if (!cancel) setLoading(false);
+      });
+    return () => {
+      cancel = true;
+    };
+  }, [token]);
 
-  const remove = async (s) => {
-    if (!confirm('Delete this share link?')) return;
+  const download = async () => {
+    if (needsPassword && !password) return;
+    setDownloading(true);
     try {
-      await api.deleteShare(s.id);
-      setShares((x) => x.filter((y) => y.id !== s.id));
-      toast.success('Share deleted');
+      const res = await fetch(api.publicShareDownloadUrl(token), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(password ? { password } : {}),
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        let msg = `Download failed (${res.status})`;
+        try {
+          const err = await res.json();
+          if (err.error) msg = err.error;
+        } catch {}
+        throw new Error(msg);
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = meta?.file_name || 'download';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setDownloaded(true);
     } catch (e) {
-      toast.error(e.message);
+      setError(e.message);
+    } finally {
+      setDownloading(false);
     }
   };
 
-  const copy = (token) => {
-    const url = `${window.location.origin}/s/${token}`;
-    navigator.clipboard.writeText(url).then(
-      () => toast.success('Link copied'),
-      () => toast.error('Copy failed')
+  if (loading) {
+    return (
+      <div className="min-h-screen grid place-items-center bg-[#eef2f9] dark:bg-[#060912]">
+        <Loader label="Loading share…" />
+      </div>
     );
-  };
+  }
 
-  if (loading) return <Loader full />;
+  if (error) {
+    return (
+      <div className="min-h-screen grid place-items-center bg-[#eef2f9] dark:bg-[#060912] p-6">
+        <div className="card-static max-w-md w-full p-8 text-center">
+          <div className="text-5xl mb-4">😕</div>
+          <h1 className="text-xl font-bold mb-2">Share unavailable</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{error}</p>
+          <Link to="/" className="btn-primary inline-flex mt-6 px-5 py-2.5">
+            ← Back to TeleCloud
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Shares</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Public download links with optional password and expiry.
-        </p>
-      </div>
-
-      {!shares.length ? (
-        <div className="card-static p-10 text-center">
-          <div className="text-4xl mb-3">🔗</div>
-          <p className="text-slate-500 dark:text-slate-400">
-            No shares yet — create one from the Files page.
+    <div className="min-h-screen grid place-items-center bg-[#eef2f9] dark:bg-[#060912] p-6">
+      <div className="card-static max-w-md w-full p-8">
+        <div className="text-center mb-6">
+          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center text-white text-3xl mx-auto mb-4">
+            📦
+          </div>
+          <h1 className="text-xl font-bold break-all">{meta?.file_name}</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Shared via TeleCloud
           </p>
         </div>
-      ) : (
-        <div className="space-y-3">
-          {shares.map((s) => {
-            const expired = s.expires_at && s.expires_at * 1000 < Date.now();
-            return (
-              <div key={s.id} className="card-static p-4 flex flex-col md:flex-row md:items-center gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm truncate">{s.file_name}</div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    {formatBytes(s.file_size)} · {s.downloads} download{s.downloads === 1 ? '' : 's'}
-                    {s.password ? ' · 🔒 password' : ''}
-                    {s.expires_at ? ` · expires ${formatDateTime(s.expires_at)}` : ' · never expires'}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {expired && <span className="badge bg-red-500/15 text-red-500">Expired</span>}
-                  <button onClick={() => copy(s.token)} className="btn-ghost text-xs px-3 py-1.5">
-                    📋 Copy
-                  </button>
-                  <a
-                    href={`/s/${s.token}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-ghost text-xs px-3 py-1.5"
-                  >
-                    ↗ Open
-                  </a>
-                  <button
-                    onClick={() => remove(s)}
-                    className="text-xs px-3 py-1.5 rounded-xl border border-red-500/30 text-red-500 hover:bg-red-500/10"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+
+        <div className="space-y-2 text-sm mb-6">
+          <div className="flex justify-between">
+            <span className="text-slate-500 dark:text-slate-400">Size</span>
+            <span className="font-medium">{formatBytes(meta?.file_size || 0)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500 dark:text-slate-400">Downloads</span>
+            <span className="font-medium">{meta?.downloads || 0}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500 dark:text-slate-400">Expires</span>
+            <span className="font-medium">
+              {meta?.expires_at ? formatDateTime(meta.expires_at) : 'Never'}
+            </span>
+          </div>
         </div>
-      )}
+
+        {needsPassword && !downloaded && (
+          <div className="mb-4">
+            <Input
+              label="🔒 Password protected"
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && download()}
+            />
+          </div>
+        )}
+
+        {downloaded ? (
+          <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-4 text-center text-sm text-emerald-600 dark:text-emerald-400">
+            ✅ Download started!
+          </div>
+        ) : (
+          <Button
+            onClick={download}
+            loading={downloading}
+            disabled={needsPassword && !password}
+            className="w-full py-3"
+          >
+            ⬇️ Download file
+          </Button>
+        )}
+
+        <p className="mt-6 text-xs text-slate-500 dark:text-slate-400 text-center">
+          Powered by{' '}
+          <Link to="/" className="link font-medium">
+            TeleCloud
+          </Link>{' '}
+          ☁️
+        </p>
+      </div>
     </div>
   );
 }
